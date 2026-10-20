@@ -1,0 +1,27 @@
+# ==============================================================================
+# WebLogic Cluster CRD - Required by WKO v4.x
+# The Domain resource references this Cluster resource by name
+# ==============================================================================
+apiVersion: "weblogic.oracle/v1"
+kind: Cluster
+metadata:
+  name: sample-domain-cluster-1
+  namespace: weblogic-domains
+  labels:
+    weblogic.domainUID: sample-domain
+spec:
+  clusterName: cluster-1
+  replicas: 1
+  serverPod:
+    env:
+      - name: JAVA_OPTIONS
+        value: "-Dweblogic.StdoutDebugEnabled=false"
+      - name: USER_MEM_ARGS
+        value: "-Djava.security.egd=file:/dev/./urandom -Xms256m -Xmx512m"
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "768Mi"
+      limits:
+        cpu: "1000m"
+        memory: "1024Mi"

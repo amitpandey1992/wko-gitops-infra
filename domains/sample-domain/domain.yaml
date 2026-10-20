@@ -1,6 +1,5 @@
 # ==============================================================================
-# Oracle WebLogic Domain Custom Resource Definition
-# Managed and reconciled by WebLogic Kubernetes Operator
+# Oracle WebLogic Domain Custom Resource - WKO v4.2.x (API v9)
 # ==============================================================================
 apiVersion: "weblogic.oracle/v9"
 kind: Domain
@@ -11,35 +10,39 @@ metadata:
     weblogic.domainUID: sample-domain
 spec:
   domainUID: sample-domain
-  domainHome: /u01/oracle/user_projects/domains/sample-domain
-  domainHomeSourceType: FromModel
-  image: "ghcr.io/oracle/weblogic-kubernetes-operator:domain-in-image-122140"
+  domainHome: /u01/domains/sample-domain
+  domainHomeSourceType: Image
+  image: "container-registry.oracle.com/middleware/weblogic:12.2.1.4"
   imagePullPolicy: IfNotPresent
-  weblogicCredentialsSecret:
+
+  # Correct field name for WKO v4.x (capital L in webLogic)
+  webLogicCredentialsSecret:
     name: weblogic-credentials
+
   includeServerOutInPodLog: true
   serverStartPolicy: IfNeeded
 
+  # Global server pod configuration
+  serverPod:
+    env:
+      - name: JAVA_OPTIONS
+        value: "-Dweblogic.StdoutDebugEnabled=false"
+      - name: USER_MEM_ARGS
+        value: "-Djava.security.egd=file:/dev/./urandom -Xms256m -Xmx512m"
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "768Mi"
+      limits:
+        cpu: "1000m"
+        memory: "1024Mi"
+
   # Admin Server Configuration
   adminServer:
-    serverPod:
-      env:
-        - name: JAVA_OPTIONS
-          value: "-Dweblogic.StdoutDebugEnabled=false"
-        - name: USER_MEM_ARGS
-          value: "-Djava.security.egd=file:/dev/./urandom -Xms256m -Xmx512m"
-      resources:
-        requests:
-          cpu: "250m"
-          memory: "512Mi"
-        limits:
-          cpu: "1000m"
-          memory: "1024Mi"
+    adminChannelPortForwardingEnabled: true
 
-  # Managed Servers Cluster Configuration
+  # Cluster references (WKO v4.x uses separate Cluster CRD)
   clusters:
-    - name: sample-cluster
+    - name: sample-domain-cluster-1
+
   replicas: 1
-  configuration:
-    model:
-      domainType: WLS
