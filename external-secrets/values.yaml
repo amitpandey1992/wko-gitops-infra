@@ -1,0 +1,22 @@
+# Configuration values for External Secrets Operator
+external-secrets:
+  installCRDs: true
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "256Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+  webhook:
+    port: 9443
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "128Mi"
+  certController:
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "128Mi"

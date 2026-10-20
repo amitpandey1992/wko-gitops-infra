@@ -1,0 +1,22 @@
+name: GitOps Manifest Validation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Kubeval / Yamllint
+        run: |
+          sudo apt-get update && sudo apt-get install -y yamllint
+
+      - name: Lint YAML Files
+        run: |
+          yamllint -d "{extends: relaxed, rules: {line-length: disable}}" .

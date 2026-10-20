@@ -1,0 +1,45 @@
+# ==============================================================================
+# Oracle WebLogic Domain Custom Resource Definition
+# Managed and reconciled by WebLogic Kubernetes Operator
+# ==============================================================================
+apiVersion: "weblogic.oracle/v9"
+kind: Domain
+metadata:
+  name: sample-domain
+  namespace: weblogic-domains
+  labels:
+    weblogic.domainUID: sample-domain
+spec:
+  domainUID: sample-domain
+  domainHome: /u01/oracle/user_projects/domains/sample-domain
+  domainHomeSourceType: FromModel
+  image: "ghcr.io/oracle/weblogic-kubernetes-operator:domain-in-image-122140"
+  imagePullPolicy: IfNotPresent
+  weblogicCredentialsSecret:
+    name: weblogic-credentials
+  includeServerOutInPodLog: true
+  serverStartPolicy: IfNeeded
+
+  # Admin Server Configuration
+  adminServer:
+    serverPod:
+      env:
+        - name: JAVA_OPTIONS
+          value: "-Dweblogic.StdoutDebugEnabled=false"
+        - name: USER_MEM_ARGS
+          value: "-Djava.security.egd=file:/dev/./urandom -Xms256m -Xmx512m"
+      resources:
+        requests:
+          cpu: "250m"
+          memory: "512Mi"
+        limits:
+          cpu: "1000m"
+          memory: "1024Mi"
+
+  # Managed Servers Cluster Configuration
+  clusters:
+    - name: sample-cluster
+  replicas: 1
+  configuration:
+    model:
+      domainType: WLS

@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: weblogic-operator
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://oracle.github.io/weblogic-kubernetes-operator/charts
+    chart: weblogic-operator
+    targetRevision: 4.2.8
+    helm:
+      values: |
+        serviceAccount: weblogic-operator-sa
+        domainNamespaces:
+          - "weblogic-domains"
+        enableClusterRoleBinding: true
+        imagePullPolicy: IfNotPresent
+        javaLoggingLevel: INFO
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1024Mi"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: opns
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

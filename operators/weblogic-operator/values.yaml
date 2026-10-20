@@ -1,0 +1,26 @@
+# Configuration values for Oracle WebLogic Kubernetes Operator
+weblogic-operator:
+  # ServiceAccount configuration
+  serviceAccount: weblogic-operator-sa
+
+  # The namespace(s) that the WebLogic Operator monitors for Domain resources
+  domainNamespaces:
+    - "weblogic-domains"
+
+  # ClusterRoleBinding allows the operator to manage resources across specified namespaces
+  enableClusterRoleBinding: true
+
+  # Image pull policy
+  imagePullPolicy: IfNotPresent
+
+  # Java logging level (INFO, FINE, FINER, FINEST)
+  javaLoggingLevel: INFO
+
+  # Resource requests and limits tailored for GKE Autopilot
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1024Mi"
