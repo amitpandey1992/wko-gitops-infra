@@ -15,6 +15,10 @@ spec:
   image: "container-registry.oracle.com/middleware/weblogic:12.2.1.4"
   imagePullPolicy: IfNotPresent
 
+  # ImagePullSecret for Oracle Container Registry authentication
+  imagePullSecrets:
+    - name: oracle-registry-secret
+
   # Correct field name for WKO v4.x (capital L in webLogic)
   webLogicCredentialsSecret:
     name: weblogic-credentials
